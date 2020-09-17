@@ -49,5 +49,17 @@ public class DiceTest {
 		Card card = new MonkeyBusinessCard();
 		Assert.assertEquals(false, dice.roll(card).equals("Parrot") );
 	}
+	
+	/**
+	 * The test case to test when this dice is dead(got Skull last time),
+	 * The dice will not be able to generate anything.
+	 */
+	
+	@Test
+	public void testRollingWhenDiceDead() {
+		Dice dice = new Dice();
+		dice.setDead(true);
+		Assert.assertEquals("", dice.roll());
+	}
 
 }
