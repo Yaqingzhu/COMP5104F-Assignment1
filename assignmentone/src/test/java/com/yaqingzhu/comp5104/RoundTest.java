@@ -91,7 +91,7 @@ public class RoundTest {
 		round.countSetScore(results);
 		round.countDiamondAndGold(results);
 		round.countFullChestScore(results);
-		Assert.assertEquals(1300, round.getScoreOfRound());
+		Assert.assertEquals(700, round.getScoreOfRound());
 	}
 
 }
