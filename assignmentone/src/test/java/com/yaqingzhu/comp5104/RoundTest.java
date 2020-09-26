@@ -93,5 +93,60 @@ public class RoundTest {
 		round.countFullChestScore(results);
 		Assert.assertEquals(700, round.getScoreOfRound());
 	}
+	
+	/**
+	 * This test will test the code that re-roll part of dices will keep all values of not-re-rolled dices.
+	 */
+	@Test
+	public void testrollAllDice() {
+		Round round = new Round();
+		String[] before = null;
+		String[] after = null;
+		round.processWithoutSeaBattle("1,2,3,4,5,6,7,8");
+		before = round.showResult().split(",");
+		round.processWithoutSeaBattle("1,2,3");
+		after = round.showResult().split(",");
+		
+		for(int i = 2; i < before.length; i++) {
+			Assert.assertEquals(before[i], after[i]);
+		}
+		
+	}
+	
+	/**
+	 * This test will test the code that end this turn. There are two cases: 1. If the Fortune card is not sea battle, you show get 3 skulls.
+	 * 2. If the FC is sea battle, as long as skulls are >=3, you die.
+	 */
+	@Test
+	public void testisToEndRound() {
+		Round round = new Round();
+		round.setActiveCard(new SeaBattleCardTwo());
+		round.setSkullNumber(4);
+		Assert.assertEquals(true, round.isToEndRound());
+		
+		round = new Round();
+		round.setSkullNumber(4);
+		Assert.assertEquals(false, round.isToEndRound());
+		round.setSkullNumber(3);
+		Assert.assertEquals(true, round.isToEndRound());
+		
+	}
+	
+	/**
+	 * This test will test the code only when you have Sorceress card, you can reroll one skull dice.
+	 */
+	@Test
+	public void testrerollSkullWithSorceressCard() {
+		String diceNum = null;
+		Round round = new Round();
+		round.setActiveCard(new SorceressCard());
+		round.getDice().get(0).setLastResult("Skull");
+		round.setSkullNumber(1);
+		diceNum = round.rerollableSkullDice();
+		
+		Assert.assertEquals(diceNum, "1");
+		Assert.assertEquals(0, round.getSkullNumber());
+		Assert.assertEquals(null, round.getActiveCard());
+	}
 
 }
