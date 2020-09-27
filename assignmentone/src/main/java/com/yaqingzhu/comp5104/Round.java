@@ -8,10 +8,12 @@ public class Round {
 	private ArrayList<Dice> dice;
 	private int scoreOfRound;
 	private Card activeCard;
+	private int skullNumber;
 	
 	public ArrayList<Dice> getDice() {
 		return dice;
 	}
+
 	public void setDice(ArrayList<Dice> dice) {
 		this.dice = dice;
 	}
@@ -28,6 +30,14 @@ public class Round {
 	public void setScoreOfRound(int scoreOfRound) {
 		this.scoreOfRound = scoreOfRound;
 	}
+	
+	public int getSkullNumber() {
+		return skullNumber;
+	}
+	public void setSkullNumber(int skullNumber) {
+		this.skullNumber = skullNumber;
+	}
+	
 	public Round() {
 		setDice(new ArrayList<Dice>());
 		for (int i = 0; i < 8; i++) {
@@ -77,17 +87,29 @@ public class Round {
 	}
 	
 	public void countDiamondAndGold(HashMap<String, Integer> results) {
-		int num = 0;
+		int numDiamond = 0;
+		int numGold = 0;
 		
-		num = num + results.get("Diamond");
-		num = num + results.get("Gold");
+		numDiamond = numDiamond + results.getOrDefault("Diamond", 0);
+		numGold = numGold + results.getOrDefault("Gold", 0);
 		
-		if((activeCard!= null && activeCard.getCardName().equalsIgnoreCase("Diamond")) ||
-				(activeCard!= null && activeCard.getCardName().equalsIgnoreCase("Gold"))) {
-			num ++;
+		if(activeCard!= null && activeCard.getCardName().equalsIgnoreCase("Diamond")) {
+			numDiamond ++;
 		}
 		
-		scoreOfRound = scoreOfRound + (num * 100);
+		if(activeCard!= null && activeCard.getCardName().equalsIgnoreCase("Gold")) {
+			numGold ++;
+		}
+		
+		if(numDiamond > 8) {
+			numDiamond--;
+		}
+		
+		if(numGold > 8) {
+			numGold--;
+		}
+		
+		scoreOfRound = scoreOfRound + ((numDiamond + numGold) * 100);
 	}
 	
 	public void countFullChestScore(HashMap<String, Integer> results) {
@@ -112,4 +134,75 @@ public class Round {
 			scoreOfRound = scoreOfRound + 500;
 		}
 	}
+	
+	
+	public String rerollableSkullDice() {
+		String numberofSkullDice = null;
+		int i = 0;
+		if(activeCard!= null && activeCard.getCardName().contains("Sorceress")) {
+			for(Dice d: dice) {				
+				if(d.getLastResult().equalsIgnoreCase("Skull")) {
+					numberofSkullDice = "" + (i+1);
+					setSkullNumber(getSkullNumber() - 1);
+					activeCard = null;
+					break;
+				}
+			}
+		}
+		return numberofSkullDice;
+	}
+	
+	public void calcRoundScore() {
+		HashMap<String, Integer> results = new HashMap<String, Integer>();
+
+		if(!isToEndRound()) {
+			for(Dice d: dice) {
+				results.put(d.getLastResult(), (results.getOrDefault(d.getLastResult(), 0) + 1));
+			}
+			
+			countSetScore(results);
+			countDiamondAndGold(results);
+			countFullChestScore(results);
+		}
+	}	
+	
+	public void processWithoutSeaBattle(String rerollNumbers) {
+		String[] diceOrder = rerollNumbers.split(",");
+		
+		for (int i = 0; i < diceOrder.length; i++) {
+			this.rollDice(Integer.parseInt(diceOrder[i]) - 1);
+			if(getDice().get(Integer.parseInt(diceOrder[i]) - 1).getLastResult().equals("Skull")) {
+				getDice().get(Integer.parseInt(diceOrder[i]) - 1).setDead(true);
+					setSkullNumber(getSkullNumber() + 1);
+			}
+		}	
+		calcRoundScore();
+	}
+	
+	public String showResult() {
+		StringBuilder sb = new StringBuilder();
+		
+		for(int i = 0; i < 8; i++) { 
+			String t = getDice().get(i).getLastResult();
+			if(t.isBlank()) {
+				t = "Skull";
+			}
+			sb.append(t);
+			if(i < 7)
+				sb.append(", ");
+		}
+		
+		return sb.toString();
+	}
+	
+	public boolean isSeaBattleActive() {
+		if(activeCard!= null && activeCard.getCardName().contains("SeaBattle")) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isToEndRound() {
+		return ((getSkullNumber() == 3) || (isSeaBattleActive() && getSkullNumber() > 3)) ;
+	}	
 }

@@ -7,6 +7,15 @@ public class Dice {
 	
 	private ArrayList<String> diceRange;
 	private boolean dead;
+	private String lastResult;
+	
+	public String getLastResult() {
+		return lastResult;
+	}
+
+	public void setLastResult(String lastResult) {
+		this.lastResult = lastResult;
+	}
 	
 	public boolean isDead() {
 		return dead;
@@ -34,6 +43,7 @@ public class Dice {
 		
 		Random random = new Random();
 		int number = random.nextInt(5);
+		setLastResult(diceRange.get(number));
 		return diceRange.get(number);
 	}
 	
@@ -55,7 +65,7 @@ public class Dice {
 				}
 				break;
 		}
-		
+		setLastResult(opt);
 		return opt;	
 	}
 }
