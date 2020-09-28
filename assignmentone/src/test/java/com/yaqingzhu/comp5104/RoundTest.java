@@ -148,5 +148,50 @@ public class RoundTest {
 		Assert.assertEquals(0, round.getSkullNumber());
 		Assert.assertEquals(null, round.getActiveCard());
 	}
+	
+	/**
+	 * This test will test the code to see if can know this player should go to island or not.
+	 */
+	@Test
+	public void testIsWentToSkullIsland() {
+		Round round = new Round();
+		round.setActiveCard(new SeaBattleCardTwo());
+		
+		Assert.assertEquals(false, round.isWentToSkullIsland());
 
+		round.setActiveCard(new SorceressCard());
+		round.setSkullNumber(1);
+		Assert.assertEquals(false, round.isWentToSkullIsland());
+		
+		round.setActiveCard(new SorceressCard());
+		round.setSkullNumber(4);
+		Assert.assertEquals(true, round.isWentToSkullIsland());
+	}
+	
+	/**
+	 * This test will test the code to see if Monkeybusiness card works.
+	 */
+	@Test
+	public void testMonkeyBusiness() {
+		Round round = new Round();
+		round.setActiveCard(new SeaBattleCardTwo());
+		
+		Assert.assertEquals("Parrot", round.checkMonkeyBusiness("Parrot"));
+
+		round.setActiveCard(new MonkeyBusinessCard());
+		Assert.assertEquals("Monkey", round.checkMonkeyBusiness("Parrot"));
+	}
+	
+	/**
+	 * This test will test the code to see if Skull island works.
+	 */
+	@Test
+	public void testSkullIsland() {
+		Round round = new Round();
+		round.setSkullNumber(4);
+		round.countSkullIslandScore();
+		
+		Assert.assertEquals(400, round.getScoreOfSkullIsland());
+		Assert.assertEquals(0, round.getScoreOfRound());
+	}
 }
