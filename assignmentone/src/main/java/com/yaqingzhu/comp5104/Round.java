@@ -9,6 +9,8 @@ public class Round {
 	private int scoreOfRound;
 	private Card activeCard;
 	private int skullNumber;
+	private int scoreOfSkullIsland;
+	private int swordsRequiredForSeaBattle;
 	
 	public ArrayList<Dice> getDice() {
 		return dice;
@@ -22,6 +24,16 @@ public class Round {
 	}
 	public void setActiveCard(Card activeCard) {
 		this.activeCard = activeCard;
+		
+		if(activeCard!= null && activeCard.getCardName().contains("Sea")) {
+			if(activeCard.getCardName().contains("2")) {
+				setSwordsRequiredForSeaBattle(2);
+			}else if (activeCard.getCardName().contains("3")) {
+				setSwordsRequiredForSeaBattle(3);
+			}else if (activeCard.getCardName().contains("4")) {
+				setSwordsRequiredForSeaBattle(4);
+			}			
+		}
 	}
 	
 	public int getScoreOfRound() {
@@ -36,6 +48,22 @@ public class Round {
 	}
 	public void setSkullNumber(int skullNumber) {
 		this.skullNumber = skullNumber;
+	}
+	
+	public int getScoreOfSkullIsland() {
+		return scoreOfSkullIsland;
+	}
+
+	public void setScoreOfSkullIsland(int scoreOfSkullIsland) {
+		this.scoreOfSkullIsland = scoreOfSkullIsland;
+	}
+	
+	public int getSwordsRequiredForSeaBattle() {
+		return swordsRequiredForSeaBattle;
+	}
+
+	public void setSwordsRequiredForSeaBattle(int swordsRequiredForSeaBattle) {
+		this.swordsRequiredForSeaBattle = swordsRequiredForSeaBattle;
 	}
 	
 	public Round() {
@@ -157,7 +185,7 @@ public class Round {
 
 		if(!isToEndRound()) {
 			for(Dice d: dice) {
-				results.put(d.getLastResult(), (results.getOrDefault(d.getLastResult(), 0) + 1));
+				results.put(checkMonkeyBusiness(d.getLastResult()), (results.getOrDefault(checkMonkeyBusiness(d.getLastResult()), 0) + 1));
 			}
 			
 			countSetScore(results);
@@ -205,4 +233,26 @@ public class Round {
 	public boolean isToEndRound() {
 		return ((getSkullNumber() == 3) || (isSeaBattleActive() && getSkullNumber() > 3)) ;
 	}	
+	
+	public boolean isWentToSkullIsland() {
+		return (!(activeCard!= null && activeCard.getCardName().contains("Sea")) && getSkullNumber() > 3);
+	}
+	
+	public String checkMonkeyBusiness(String input) {
+		String output = input;
+		if(activeCard!= null && activeCard.getCardName().equalsIgnoreCase("MonkeyBusiness") && input.equalsIgnoreCase("Parrot")) {
+			output = "Monkey";
+		}
+		return output;
+	}
+	
+	public void countSkullIslandScore() {
+		scoreOfSkullIsland = getSkullNumber() * 100;
+		
+		if(activeCard!= null && activeCard.getCardName().equalsIgnoreCase("Captain")) {
+			scoreOfSkullIsland = scoreOfSkullIsland * 2;
+		}
+
+	}
+	
 }
