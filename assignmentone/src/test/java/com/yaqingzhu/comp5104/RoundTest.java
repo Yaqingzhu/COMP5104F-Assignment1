@@ -102,9 +102,9 @@ public class RoundTest {
 		Round round = new Round();
 		String[] before = null;
 		String[] after = null;
-		round.processWithoutSeaBattle("1,2,3,4,5,6,7,8");
+		round.process("1,2,3,4,5,6,7,8");
 		before = round.showResult().split(",");
-		round.processWithoutSeaBattle("1,2,3");
+		round.process("1,2,3");
 		after = round.showResult().split(",");
 		
 		for(int i = 3; i < before.length; i++) {

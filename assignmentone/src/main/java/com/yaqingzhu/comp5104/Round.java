@@ -226,16 +226,13 @@ public class Round {
 		}
 	}	
 	
-	public void processWithoutSeaBattle(String rerollNumbers) {
+	public void process(String rerollNumbers) {
 		String[] diceOrder = rerollNumbers.split(",");
 		
 		for (int i = 0; i < diceOrder.length; i++) {
 			this.rollDice(Integer.parseInt(diceOrder[i]) - 1);
-			if(getDice().get(Integer.parseInt(diceOrder[i]) - 1).getLastResult().equals("Skull")) {
-				getDice().get(Integer.parseInt(diceOrder[i]) - 1).setDead(true);
-					setSkullNumber(getSkullNumber() + 1);
-			}
 		}	
+		checkSkullsOfRoll(rerollNumbers);
 		calcRoundScore();
 	}
 	
