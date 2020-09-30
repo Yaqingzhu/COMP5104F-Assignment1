@@ -11,6 +11,15 @@ public class Round {
 	private int skullNumber;
 	private int scoreOfSkullIsland;
 	private int swordsRequiredForSeaBattle;
+	private boolean isToEndSkullIsland;
+
+	public boolean isToEndSkullIsland() {
+		return isToEndSkullIsland;
+	}
+
+	public void setToEndSkullIsland(boolean isToEndSkullIsland) {
+		this.isToEndSkullIsland = isToEndSkullIsland;
+	}
 	
 	public ArrayList<Dice> getDice() {
 		return dice;
@@ -182,15 +191,38 @@ public class Round {
 	
 	public void calcRoundScore() {
 		HashMap<String, Integer> results = new HashMap<String, Integer>();
-
-		if(!isToEndRound()) {
-			for(Dice d: dice) {
-				results.put(checkMonkeyBusiness(d.getLastResult()), (results.getOrDefault(checkMonkeyBusiness(d.getLastResult()), 0) + 1));
+		
+		if(isSeaBattleActive()) {
+			if(!isToEndRound()) {
+				for(Dice d: dice) {
+					results.put(d.getLastResult(), results.getOrDefault(d.getLastResult(), 0) + 1);
+				}
+				
+				if(getSwordsRequiredForSeaBattle() <= results.getOrDefault("Sword", 0)) {
+					countSeaBattleScore(results, 1);
+					countSetScore(results);
+					countDiamondAndGold(results);
+					countFullChestScore(results);
+				}else {
+					countSeaBattleScore(results, -1); 
+				}
+			} else {
+				countSeaBattleScore(results, -1);
 			}
-			
-			countSetScore(results);
-			countDiamondAndGold(results);
-			countFullChestScore(results);
+		} else {
+			if(!isToEndRound()) {
+				for(Dice d: dice) {
+					results.put(checkMonkeyBusiness(d.getLastResult()), (results.getOrDefault(checkMonkeyBusiness(d.getLastResult()), 0) + 1));
+				}
+				
+				if(getSkullNumber() > 3) {
+					countSkullIslandScore();
+				}else {
+					countSetScore(results);
+					countDiamondAndGold(results);
+					countFullChestScore(results);
+				}
+			} 
 		}
 	}	
 	
@@ -253,6 +285,41 @@ public class Round {
 			scoreOfSkullIsland = scoreOfSkullIsland * 2;
 		}
 
+	}
+	
+	public void checkSkullsOfRoll(String rerollNumbers) {
+		String[] diceOrder = rerollNumbers.split(",");
+		int skullsOfThisTry = 0;
+		scoreOfRound = 0;
+		
+		for (int i = 0; i < diceOrder.length; i++) {
+			if(getDice().get(Integer.parseInt(diceOrder[i]) - 1).getLastResult().equals("Skull")) {
+				getDice().get(Integer.parseInt(diceOrder[i]) - 1).setDead(true);
+					setSkullNumber(getSkullNumber() + 1);
+					skullsOfThisTry++;
+			}
+		}
+		
+		if(skullsOfThisTry == 0) {
+			isToEndSkullIsland = true;
+		}
+	}
+	
+	public void countSeaBattleScore(HashMap<String, Integer> results, int isSeaBattleWon) {
+		int score = 0;
+		switch(getSwordsRequiredForSeaBattle()) {
+		case 2:
+			score = 300 * isSeaBattleWon;
+			break;
+		case 3:
+			score = 500 * isSeaBattleWon;
+			break;
+		case 4:
+			score = 1000 * isSeaBattleWon;
+			break;
+		}
+		
+		scoreOfRound = scoreOfRound + score;
 	}
 	
 }
