@@ -107,7 +107,7 @@ public class RoundTest {
 		round.processWithoutSeaBattle("1,2,3");
 		after = round.showResult().split(",");
 		
-		for(int i = 2; i < before.length; i++) {
+		for(int i = 3; i < before.length; i++) {
 			Assert.assertEquals(before[i], after[i]);
 		}
 		
@@ -193,5 +193,61 @@ public class RoundTest {
 		
 		Assert.assertEquals(400, round.getScoreOfSkullIsland());
 		Assert.assertEquals(0, round.getScoreOfRound());
+	}
+	
+	/**
+	 * This test will test the code to see if Skull Island works with Captain Card.
+	 */
+	@Test
+	public void testSkullIslandWithZeroSkullOfRoll() {
+		Round round = new Round();
+		round.getDice().get(0).setLastResult("Sword");
+		round.getDice().get(1).setLastResult("Skull");
+		round.getDice().get(2).setLastResult("Skull");
+		round.getDice().get(3).setLastResult("Skull");
+		round.getDice().get(4).setLastResult("Skull");
+		round.getDice().get(5).setLastResult("Sword");
+		round.getDice().get(6).setLastResult("Sword");
+		round.getDice().get(7).setLastResult("Sword");
+		round.checkSkullsOfRoll("1,2,3,4,5,6,7,8");
+		Assert.assertEquals(false, round.isToEndSkullIsland());
+
+		round.getDice().get(6).setLastResult("Parrot");
+		round.getDice().get(7).setLastResult("Parrot");
+		round.checkSkullsOfRoll("7,8");
+		
+		Assert.assertEquals(true, round.isToEndSkullIsland());
+	}
+	
+	/**
+	 * This test will test the code to see if Sea battle works.
+	 */
+	@Test
+	public void testSeaBattleActive() {
+		Round round = new Round();
+		round.setActiveCard(new SeaBattleCardTwo());
+		
+		Assert.assertEquals(true, round.isSeaBattleActive());
+	}
+	
+	/**
+	 * This test will test the code to see if Sea battle works.
+	 */
+	@Test
+	public void testSeaBattleScore() {
+		Round round = new Round();
+		round.setActiveCard(new SeaBattleCardTwo());
+		round.getDice().get(0).setLastResult("Sword");
+		round.getDice().get(1).setLastResult("Sword");
+		round.getDice().get(2).setLastResult("Monkey");
+		round.getDice().get(3).setLastResult("Monkey");
+		round.getDice().get(4).setLastResult("Parrot");
+		round.getDice().get(5).setLastResult("Parrot");
+		round.getDice().get(6).setLastResult("Sword");
+		round.getDice().get(7).setLastResult("Sword");
+		round.calcRoundScore();
+		Assert.assertEquals(true, round.isSeaBattleActive());
+		
+		Assert.assertEquals(500, round.getScoreOfRound());
 	}
 }
