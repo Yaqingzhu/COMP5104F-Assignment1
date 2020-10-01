@@ -12,7 +12,16 @@ public class Round {
 	private int scoreOfSkullIsland;
 	private int swordsRequiredForSeaBattle;
 	private boolean isToEndSkullIsland;
+	private String TreasureChestDices;
+	
+	public String getTreasureChestDices() {
+		return TreasureChestDices;
+	}
 
+	public void setTreasureChestDices(String treasureChestDices) {
+		TreasureChestDices = treasureChestDices;
+	}
+	
 	public boolean isToEndSkullIsland() {
 		return isToEndSkullIsland;
 	}
@@ -230,7 +239,9 @@ public class Round {
 					countFullChestScore(results);
 					countCaptainCardScore();
 				}
-			} 
+			} else if(activeCard!= null && activeCard.getCardName().equalsIgnoreCase("TreasureChest")) {
+				getTreasureChestScore(getTreasureChestDices());
+			}
 		}
 	}	
 	
@@ -331,6 +342,25 @@ public class Round {
 		if(activeCard!= null && activeCard.getCardName().equalsIgnoreCase("Captain")) {
 			scoreOfRound = scoreOfRound * 2;
 		}
+	}
+	
+	public void getTreasureChestScore(String diceNumber) {
+		String[] diceOrder = diceNumber.split(",");
+		HashMap<String, Integer> results = new HashMap<String, Integer>();
+		
+		for (int i = 0; i < diceOrder.length; i++) {
+			results.put(getDice().get(Integer.parseInt(diceOrder[i]) - 1).getLastResult(), results.getOrDefault(getDice().get(Integer.parseInt(diceOrder[i]) - 1).getLastResult(), 0) + 1);
+		}
+		
+		for(int i = 0; i < 8-diceOrder.length; i++) {
+			results.put("", 1);
+		}
+		
+		scoreOfRound = 0;
+		countSetScore(results);
+		countDiamondAndGold(results);
+		countFullChestScore(results);
+		
 	}
 	
 }
