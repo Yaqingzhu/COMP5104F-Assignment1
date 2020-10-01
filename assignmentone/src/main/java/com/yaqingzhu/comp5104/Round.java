@@ -34,6 +34,14 @@ public class Round {
 	public void setActiveCard(Card activeCard) {
 		this.activeCard = activeCard;
 		
+		if(activeCard!= null && activeCard.getCardName().contains("Skull")) {
+			if(activeCard.getCardName().contains("2")) {
+				setSkullNumber(getSkullNumber() + 2);
+			}else {
+				setSkullNumber(getSkullNumber() + 1);
+			}			
+		}
+		
 		if(activeCard!= null && activeCard.getCardName().contains("Sea")) {
 			if(activeCard.getCardName().contains("2")) {
 				setSwordsRequiredForSeaBattle(2);
@@ -97,6 +105,11 @@ public class Round {
 						(key.equalsIgnoreCase("Gold") && activeCard!= null && activeCard.getCardName().equalsIgnoreCase("Gold"))) {
 					numberOfSet ++;
 				}
+				
+				if(numberOfSet > 8) {
+					numberOfSet--;
+				}
+				
 				switch(numberOfSet) {
 				case 3:
 					scoreOfRound = scoreOfRound + 100;
@@ -138,14 +151,6 @@ public class Round {
 			numGold ++;
 		}
 		
-		if(numDiamond > 8) {
-			numDiamond--;
-		}
-		
-		if(numGold > 8) {
-			numGold--;
-		}
-		
 		scoreOfRound = scoreOfRound + ((numDiamond + numGold) * 100);
 	}
 	
@@ -184,6 +189,7 @@ public class Round {
 					activeCard = null;
 					break;
 				}
+				i++;
 			}
 		}
 		return numberofSkullDice;
@@ -203,6 +209,7 @@ public class Round {
 					countSetScore(results);
 					countDiamondAndGold(results);
 					countFullChestScore(results);
+					countCaptainCardScore();
 				}else {
 					countSeaBattleScore(results, -1); 
 				}
@@ -221,6 +228,7 @@ public class Round {
 					countSetScore(results);
 					countDiamondAndGold(results);
 					countFullChestScore(results);
+					countCaptainCardScore();
 				}
 			} 
 		}
@@ -228,7 +236,7 @@ public class Round {
 	
 	public void process(String rerollNumbers) {
 		String[] diceOrder = rerollNumbers.split(",");
-		
+		scoreOfRound = 0;
 		for (int i = 0; i < diceOrder.length; i++) {
 			this.rollDice(Integer.parseInt(diceOrder[i]) - 1);
 		}	
@@ -317,6 +325,12 @@ public class Round {
 		}
 		
 		scoreOfRound = scoreOfRound + score;
+	}
+	
+	public void countCaptainCardScore() {
+		if(activeCard!= null && activeCard.getCardName().equalsIgnoreCase("Captain")) {
+			scoreOfRound = scoreOfRound * 2;
+		}
 	}
 	
 }
