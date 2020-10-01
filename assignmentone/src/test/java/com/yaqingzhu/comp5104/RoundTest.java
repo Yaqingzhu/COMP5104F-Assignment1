@@ -333,7 +333,7 @@ public class RoundTest {
 		round.getDice().get(7).setLastResult("Gold");
 		round.calcRoundScore();
 		
-		Assert.assertEquals(5400, round.getScoreOfSkullIsland());
+		Assert.assertEquals(5400, round.getScoreOfRound());
 	}
 	
 	/**
