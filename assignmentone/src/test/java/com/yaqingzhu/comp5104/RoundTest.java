@@ -354,4 +354,30 @@ public class RoundTest {
 		
 		Assert.assertEquals(2, round.getSkullNumber());
 	}
+	
+	/**
+	 * This test will test the code to see if treasure card can do correctly.
+	 */
+	@Test
+	public void testTreasureChestCards() {
+		Round round = new Round();
+		round.setActiveCard(new TreasureChestCard());
+		round.getDice().get(0).setLastResult("Parrot");
+		round.getDice().get(1).setLastResult("Parrot");
+		round.getDice().get(2).setLastResult("Parrot");
+		round.getDice().get(3).setLastResult("Sword");
+		round.getDice().get(4).setLastResult("Sword");
+		round.getDice().get(5).setLastResult("Diamond");
+		round.getDice().get(6).setLastResult("Diamond");
+		round.getDice().get(7).setLastResult("Gold");
+		round.checkSkullsOfRoll("1,2,3,4,5,6,7,8");
+		round.calcRoundScore();
+		
+		Assert.assertEquals(400, round.getScoreOfRound());
+		
+		round.setTreasureChestDices("6,7,8");
+		round.getTreasureChestScore(round.getTreasureChestDices()); 																
+
+		Assert.assertEquals(300, round.getScoreOfRound());
+	}
 }
