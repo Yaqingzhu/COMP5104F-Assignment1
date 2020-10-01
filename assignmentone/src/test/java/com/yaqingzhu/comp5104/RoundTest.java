@@ -295,4 +295,63 @@ public class RoundTest {
 		Assert.assertEquals(0, round.getScoreOfRound());
 		Assert.assertEquals(800, round.getScoreOfSkullIsland());
 	}
+	
+	/**
+	 * This test will test the code to see if normal process works with Captain Card.
+	 */
+	@Test
+	public void testCaptainCardForNormal() {
+		Round round = new Round();
+		round.setActiveCard(new CaptainCard());
+		round.getDice().get(0).setLastResult("Sword");
+		round.getDice().get(1).setLastResult("Sword");
+		round.getDice().get(2).setLastResult("Sword");
+		round.getDice().get(3).setLastResult("Sword");
+		round.getDice().get(4).setLastResult("Sword");
+		round.getDice().get(5).setLastResult("Sword");
+		round.getDice().get(6).setLastResult("Sword");
+		round.getDice().get(7).setLastResult("Sword");
+		round.calcRoundScore();
+		
+		Assert.assertEquals(9000, round.getScoreOfRound());
+	}
+	
+	/**
+	 * This test will test the code to see if set can only take up to 8 dices.
+	 */
+	@Test
+	public void testSetScoreCanHave8() {
+		Round round = new Round();
+		round.setActiveCard(new GoldCard());
+		round.getDice().get(0).setLastResult("Gold");
+		round.getDice().get(1).setLastResult("Gold");
+		round.getDice().get(2).setLastResult("Gold");
+		round.getDice().get(3).setLastResult("Gold");
+		round.getDice().get(4).setLastResult("Gold");
+		round.getDice().get(5).setLastResult("Gold");
+		round.getDice().get(6).setLastResult("Gold");
+		round.getDice().get(7).setLastResult("Gold");
+		round.calcRoundScore();
+		
+		Assert.assertEquals(5400, round.getScoreOfSkullIsland());
+	}
+	
+	/**
+	 * This test will test the code to see if can use skull cards.
+	 */
+	@Test
+	public void testSetSkullCards() {
+		Round round = new Round();
+		round.setActiveCard(new SkullCardTwo());
+		round.getDice().get(0).setLastResult("Gold");
+		round.getDice().get(1).setLastResult("Gold");
+		round.getDice().get(2).setLastResult("Gold");
+		round.getDice().get(3).setLastResult("Gold");
+		round.getDice().get(4).setLastResult("Gold");
+		round.getDice().get(5).setLastResult("Gold");
+		round.getDice().get(6).setLastResult("Gold");
+		round.getDice().get(7).setLastResult("Gold");
+		
+		Assert.assertEquals(2, round.getSkullNumber());
+	}
 }
