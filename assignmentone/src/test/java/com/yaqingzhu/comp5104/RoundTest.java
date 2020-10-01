@@ -250,4 +250,49 @@ public class RoundTest {
 		
 		Assert.assertEquals(500, round.getScoreOfRound());
 	}
+	
+	/**
+	 * This test will test the code to see if Sea battle works.
+	 */
+	@Test
+	public void testSeaBattleScoreWithSkulls() {
+		Round round = new Round();
+		round.setActiveCard(new SeaBattleCardTwo());
+		round.getDice().get(0).setLastResult("Sword");
+		round.getDice().get(1).setLastResult("Sword");
+		round.getDice().get(2).setLastResult("Skull");
+		round.getDice().get(3).setLastResult("Skull");
+		round.getDice().get(4).setLastResult("Skull");
+		round.getDice().get(5).setLastResult("Skull");
+		round.getDice().get(6).setLastResult("Sword");
+		round.getDice().get(7).setLastResult("Sword");
+		round.setSkullNumber(4);
+		round.calcRoundScore();
+		Assert.assertEquals(true, round.isSeaBattleActive());
+		
+		Assert.assertEquals(-300, round.getScoreOfRound());
+	}
+	
+	/**
+	 * This test will test the code to see if Skull Island works with Captain Card.
+	 */
+	@Test
+	public void testSkullIslandWithCorrectScore() {
+		Round round = new Round();
+		round.setActiveCard(new CaptainCard());
+		round.getDice().get(0).setLastResult("Sword");
+		round.getDice().get(1).setLastResult("Sword");
+		round.getDice().get(2).setLastResult("Skull");
+		round.getDice().get(3).setLastResult("Skull");
+		round.getDice().get(4).setLastResult("Skull");
+		round.getDice().get(5).setLastResult("Sword");
+		round.getDice().get(6).setLastResult("Sword");
+		round.getDice().get(7).setLastResult("Sword");
+		Assert.assertEquals(0, round.getSkullNumber());
+		round.setSkullNumber(4);
+		round.calcRoundScore();
+		
+		Assert.assertEquals(0, round.getScoreOfRound());
+		Assert.assertEquals(800, round.getScoreOfSkullIsland());
+	}
 }
