@@ -70,4 +70,25 @@ public class CustomerTestForFullChest {
 
 		Assert.assertEquals(1000, round.getScoreOfRound());
 	}
+	
+	/**
+	* FC: monkey business and RTS: 2 monkeys, 1 parrot, 2 coins, 3 diamonds   SC 1200 (bonus)
+	*/
+	@Test
+	public void customerTest4Row104() {
+		Round round = new Round();
+		round.setActiveCard(new MonkeyBusinessCard());
+		round.getDice().get(0).setLastResult("Monkey");
+		round.getDice().get(1).setLastResult("Monkey");
+		round.getDice().get(2).setLastResult("Parrot");
+		round.getDice().get(3).setLastResult("Gold");
+		round.getDice().get(4).setLastResult("Gold");
+		round.getDice().get(5).setLastResult("Diamond");
+		round.getDice().get(6).setLastResult("Diamond");
+		round.getDice().get(7).setLastResult("Diamond");
+		round.checkSkullsOfRoll("1,2,3,4,5,6,7,8");
+		round.calcRoundScore();
+	
+		Assert.assertEquals(1200, round.getScoreOfRound());
+	}
 }
