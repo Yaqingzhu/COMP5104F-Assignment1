@@ -42,7 +42,7 @@ public class GameServer {
 			broadCast("Please wait for player " + (getWhosTurn() + 1) + " to finish round.", getWhosTurn());
 			currentPlayer.runYourRound();
 			
-			if(currentPlayer.getPlayer().getScore() > 6000) {
+			if(currentPlayer.getPlayer().getScore() >= 6000) {
 				broadCast("Winner is " + + (getWhosTurn() + 1) + "! ");
 				broadCast("EOG");
 				break;

@@ -13,15 +13,25 @@ public class PlayerThread{
 	
 	PrintStream out;
 	BufferedReader buf;
+	private boolean isFakeRamdon = false;
 	private Player player;
 	private ArrayList<Card> allCards;
+
+	public boolean isFakeRamdon() {
+		return isFakeRamdon;
+	}
+
+	public void setFakeRamdon(boolean isFakeRamdon) {
+		this.isFakeRamdon = isFakeRamdon;
+		this.player.setFakeRandom(this.isFakeRamdon());
+	}
 
 	public Player getPlayer() {
 		return player;
 	}
 
 	public void setPlayer(Player player) {
-		this.player = player;
+		this.player = player;		
 	}
 	public void setSocket(Socket client) {
 		try {
@@ -110,6 +120,7 @@ public class PlayerThread{
 					
 					if(option1Return.contains("disqualified")) {
 						out.println("INFO: You final score of this turn is: " + getPlayer().getRound().getScoreOfRound());
+						out.println("INFO: You score now is: " + getPlayer().getScore());
 						flag = false;
 					}
 						
@@ -134,7 +145,7 @@ public class PlayerThread{
 		}
 		
 		out.println("INFO: Your turn finished.");
-		if(getPlayer().getRound().getScoreOfRound() > 6000) {
+		if(getPlayer().getScore() >= 6000) {
 			out.println("INFO: You are the winner.");
 		}
 	}
@@ -146,7 +157,13 @@ public class PlayerThread{
 	private void drawCard() {
 		Random random = new Random();
 		int number = random.nextInt(33);
-		Card ca = allCards.get(number);
+		Card ca;
+		if(this.isFakeRamdon()) {
+			ca = allCards.get(new FakeRandom().getFakeRandom());
+		}else {
+			ca = allCards.get(number);
+		}
+		
 		
 		getPlayer().getRound().setActiveCard(ca);
 		out.println("INFO: You get " + ca.getCardName() +" Card at the beginning.");

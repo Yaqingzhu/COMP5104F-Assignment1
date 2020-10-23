@@ -13,6 +13,7 @@ public class Round {
 	private int swordsRequiredForSeaBattle;
 	private boolean isToEndSkullIsland;
 	private String TreasureChestDices;
+	public boolean isFakeRandom = false;
 	
 	public String getTreasureChestDices() {
 		return TreasureChestDices;
@@ -176,7 +177,7 @@ public class Round {
 			 * For example, Dice result is {Monkey, Monkey, Parrot, Gold}. After checkMonkeyBusiness function, the values stored 
 			 * in this results hashset is {Monkey, Monkey, Monkey, Gold}.
 			 */
-			if(results.get(key) < 3 && !key.contains("Diamond") && !key.contains("Gold")) {
+			if(results.get(key) < 3 && !key.contains("Diamond") && !key.contains("Gold") && !(this.getActiveCard()!= null && this.getActiveCard().getCardName().contains("SeaBattle") && key.equalsIgnoreCase("sword") && results.get(key) >=2)) {
 				isFullChest = false;
 			}
 		}
@@ -195,6 +196,8 @@ public class Round {
 				if(d.getLastResult().equalsIgnoreCase("Skull")) {
 					numberofSkullDice = "" + (i+1);
 					setSkullNumber(getSkullNumber() - 1);
+					d.setDead(false);
+					d.setLastResult(null);
 					activeCard = null;
 					break;
 				}
@@ -245,12 +248,24 @@ public class Round {
 		}
 	}	
 	
-	public void process(String rerollNumbers) {
+	public void processRoll(String rerollNumbers) {
 		String[] diceOrder = rerollNumbers.split(",");
+		if(isFakeRandom) {
+			FakeRandom fr = new FakeRandom();
+			String[] DiceRes = fr.getFakeRandomDice(diceOrder.length).split(",");
+			for (int i = 0; i < diceOrder.length; i++) {
+				this.dice.get(Integer.parseInt(diceOrder[i]) - 1).setLastResult(DiceRes[i]);
+			}
+		}else {
+			for (int i = 0; i < diceOrder.length; i++) {
+				this.rollDice(Integer.parseInt(diceOrder[i]) - 1);
+			}
+		}
+			
+	}
+	
+	public void processCalc(String rerollNumbers) {
 		scoreOfRound = 0;
-		for (int i = 0; i < diceOrder.length; i++) {
-			this.rollDice(Integer.parseInt(diceOrder[i]) - 1);
-		}	
 		checkSkullsOfRoll(rerollNumbers);
 		calcRoundScore();
 	}
@@ -265,7 +280,7 @@ public class Round {
 			}
 			sb.append(t);
 			if(i < 7)
-				sb.append(", ");
+				sb.append(",");
 		}
 		
 		return sb.toString();
@@ -341,26 +356,29 @@ public class Round {
 	public void countCaptainCardScore() {
 		if(activeCard!= null && activeCard.getCardName().equalsIgnoreCase("Captain")) {
 			scoreOfRound = scoreOfRound * 2;
+			scoreOfSkullIsland = scoreOfSkullIsland * 2;
 		}
 	}
 	
 	public void getTreasureChestScore(String diceNumber) {
-		String[] diceOrder = diceNumber.split(",");
-		HashMap<String, Integer> results = new HashMap<String, Integer>();
 		
-		for (int i = 0; i < diceOrder.length; i++) {
-			results.put(getDice().get(Integer.parseInt(diceOrder[i]) - 1).getLastResult(), results.getOrDefault(getDice().get(Integer.parseInt(diceOrder[i]) - 1).getLastResult(), 0) + 1);
+		if(diceNumber != null) {
+			String[] diceOrder = diceNumber.split(",");
+			HashMap<String, Integer> results = new HashMap<String, Integer>();
+			
+			for (int i = 0; i < diceOrder.length; i++) {
+				results.put(getDice().get(Integer.parseInt(diceOrder[i]) - 1).getLastResult(), results.getOrDefault(getDice().get(Integer.parseInt(diceOrder[i]) - 1).getLastResult(), 0) + 1);
+			}
+			
+			for(int i = 0; i < 8-diceOrder.length; i++) {
+				results.put("", 1);
+			}
+			
+			scoreOfRound = 0;
+			countSetScore(results);
+			countDiamondAndGold(results);
+			countFullChestScore(results);
 		}
-		
-		for(int i = 0; i < 8-diceOrder.length; i++) {
-			results.put("", 1);
-		}
-		
-		scoreOfRound = 0;
-		countSetScore(results);
-		countDiamondAndGold(results);
-		countFullChestScore(results);
-		
 	}
 	
 }

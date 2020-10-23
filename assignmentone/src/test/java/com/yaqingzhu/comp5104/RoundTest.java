@@ -102,9 +102,11 @@ public class RoundTest {
 		Round round = new Round();
 		String[] before = null;
 		String[] after = null;
-		round.process("1,2,3,4,5,6,7,8");
+		round.processRoll("1,2,3,4,5,6,7,8");
+		round.processCalc("1,2,3,4,5,6,7,8");
 		before = round.showResult().split(",");
-		round.process("1,2,3");
+		round.processRoll("1,2,3");
+		round.processCalc("1,2,3,4,5,6,7,8");
 		after = round.showResult().split(",");
 		
 		for(int i = 3; i < before.length; i++) {

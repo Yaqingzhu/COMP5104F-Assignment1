@@ -33,6 +33,8 @@ public class GameClient {
                 }  
         }  
         input.close();  
+        out.close();
+        client.close();
         if(client != null){  
             client.close(); 
         }  
